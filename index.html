@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deceptionist Rule Book</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .game-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            background: linear-gradient(to right, #f9d423, #ff4e50);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            color: #a0a0c0;
+            font-weight: 300;
+        }
+
+        .open-book-btn {
+            background: linear-gradient(135deg, #ff4e50 0%, #f9d423 100%);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(255, 78, 80, 0.3);
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 2rem;
+        }
+
+        .open-book-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(255, 78, 80, 0.4);
+        }
+
+        .open-book-btn:active {
+            transform: translateY(1px);
+        }
+
+        .book-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 20px;
+        }
+
+        .book {
+            width: 90%;
+            max-width: 900px;
+            height: 80vh;
+            perspective: 2000px;
+            position: relative;
+        }
+
+        .book-cover {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #1a1a2e, #16213e);
+            border-radius: 10px 20px 20px 10px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transform-origin: left center;
+            transition: transform 1s ease-in-out;
+            z-index: 10;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .book-cover.open {
+            transform: rotateY(-180deg);
+        }
+
+        .cover-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #f9d423, #ff4e50);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            letter-spacing: 3px;
+        }
+
+        .cover-subtitle {
+            font-size: 1.2rem;
+            color: #a0a0c0;
+            font-weight: 300;
+            margin-bottom: 2rem;
+        }
+
+        .open-text {
+            font-size: 1rem;
+            color: #f9d423;
+            margin-top: 2rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.7;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.7;
+            }
+        }
+
+        .book-content {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #f5f5f5;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            display: none;
+            color: #333;
+        }
+
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            padding: 40px 30px 80px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Header Row (Skip, Title, Close) */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .page-header h2 {
+            color: #16213e;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #ff4e50;
+            padding-bottom: 5px;
+            margin: 0;
+            flex: 1;
+            text-align: center;
+        }
+
+        .skip-link {
+            font-size: 0.9rem;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+            margin-right: 10px;
+        }
+
+        .skip-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .close-book {
+            background: #ff4e50;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(255, 78, 80, 0.3);
+        }
+
+        .page h3 {
+            color: #1a1a2e;
+            margin: 20px 0 10px;
+        }
+
+        .page ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .page li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .page-nav {
+            position: absolute;
+            bottom: 20px;
+            width: calc(100% - 60px);
+            display: flex;
+            justify-content: space-between;
+            left: 30px;
+        }
+
+        .nav-btn {
+            background: #16213e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #1a1a2e;
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0c0;
+            cursor: not-allowed;
+        }
+
+        .page-numbers {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 2.5rem;
+            }
+
+            .book {
+                height: 70vh;
+            }
+
+            .page {
+                padding: 20px 15px 70px;
+            }
+
+            .page-header h2 {
+                font-size: 1.4rem;
+            }
+
+            .page-nav {
+                width: calc(100% - 30px);
+                left: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="game-title">DECEPTIONIST</h1>
+        <p class="subtitle">"NOT ALL EXITS ARE ESCAPE"</p>
+        <button class="open-book-btn">OPEN RULE BOOK</button>
+    </div>
+
+    <div class="book-container">
+        <div class="book">
+            <div class="book-cover">
+                <h1 class="cover-title">DECEPTIONIST</h1>
+                <p class="cover-subtitle">Rule Book</p>
+                <p class="open-text">Click to open</p>
+            </div>
+
+            <div class="book-content">
+                <div class="page active" id="page1">
+                    <div class="page-header">
+                        <a href="./deceptionist.html" class="skip-link">Skip</a>
+                        <h2>How to Play</h2>
+                        <button class="close-book">×</button>
+                    </div>
+
+                    <h3>Goal</h3>
+                    <p>Move your piece from its home color to the opposite location point (the center cell marked with a
+                        pin).</p>
+                    <p>If you are RED escape from YELLOW</p>
+                    <p>If you are YELLOW escape from RED</p>
+                    <p>If you are GREEN escape from BLUE</p>
+                    <p>If you are BLUE escape from GREEN</p>
+
+                    <h3>Turns & Movement</h3>
+                    <ul>
+                        <li><strong>Roll</strong>: Click Roll Dice on your turn.</li>
+                        <li><strong>Unlock</strong>: Your first six only unlocks your piece onto the board (no wall that
+                            turn).</li>
+                        <li><strong>Move</strong>: After rolling, click a highlighted cell to move exactly that many
+                            steps along connected cells.</li>
+                    </ul>
+
+                    <div class="page-nav">
+                        <button class="nav-btn prev-btn" disabled>Previous</button>
+                        <button class="nav-btn next-btn">Next</button>
+                    </div>
+                    <div class="page-numbers">Page 1 of 4</div>
+                </div>
+
+                <div class="page" id="page2">
+                    <div class="page-header">
+                        <a href="./deceptionist.html" class="skip-link">Skip</a>
+                        <h2>Walls</h2>
+                        <button class="close-book">×</button>
+                    </div>
+
+                    <ul>
+                        <li><strong>When</strong>: Walls can be placed only on a turn where a six is rolled (except the
+                            first six, which only unlocks).</li>
+                        <li><strong>Choice</strong>: Placing a wall is optional for both you and bots.</li>
+                        <li><strong>Limits</strong>: Each color has 3 walls. A wall lasts for 3 of that color's turns.
+                        </li>
+                        <li><strong>Effect</strong>: Only the wall owner can enter its cell; others are blocked.</li>
+                        <li><strong>No-Place Zones</strong>: Walls cannot be placed on any location/goal cell.</li>
+                    </ul>
+
+                    <h2>Special Rule</h2>
+                    <ul>
+                        <li><strong>Trapped on 4</strong>: If a piece is sandwiched by two walls with a one-cell gap and
+                            the roll is 4, that piece automatically returns home.</li>
+                    </ul>
+
+                    <div class="page-nav">
+                        <button class="nav-btn prev-btn">Previous</button>
+                        <button class="nav-btn next-btn">Next</button>
+                    </div>
+                    <div class="page-numbers">Page 2 of 4</div>
+                </div>
+
+                <div class="page" id="page3">
+                    <div class="page-header">
+                        <a href="./deceptionist.html" class="skip-link">Skip</a>
+                        <h2>Winning (1v3)</h2>
+                        <button class="close-book">×</button>
+                    </div>
+
+                    <ul>
+                        <li><strong>Ends When</strong>: The game ends when you finish (shows rank: 1st/2nd/3rd) or all
+                            three bots finish first (You lose).</li>
+                        <li><strong>Ongoing</strong>: If a bot finishes before you, the game continues until you finish
+                            or all three bots finish.</li>
+                    </ul>
+
+                    <h2>Controls</h2>
+                    <ul>
+                        <li><strong>Roll Dice</strong>: Start your turn.</li>
+                        <li><strong>Move</strong>: Click a highlighted target cell.</li>
+                        <li><strong>Place Wall</strong>: After rolling a six (not the first six), click Place Wall, then
+                            a cell to place it.</li>
+                    </ul>
+
+                    <div class="page-nav">
+                        <button class="nav-btn prev-btn">Previous</button>
+                        <button class="nav-btn next-btn">Next</button>
+                    </div>
+                    <div class="page-numbers">Page 3 of 4</div>
+                </div>
+
+                <div class="page" id="page4">
+                    <div class="page-header">
+                        <a href="./deceptionist.html" class="skip-link">Skip</a>
+                        <h2>Ready to Play?</h2>
+                        <button class="close-book">×</button>
+                    </div>
+
+                    <p>Now that you know the rules, you're ready to start playing Deceptionist!</p>
+                    <p>Remember, strategy is key. Use your walls wisely to block opponents while advancing your own
+                        piece.</p>
+                    <p>Good luck and have fun!</p>
+
+                    <div style="text-align: center; margin-top: 40px;">
+                        <button class="open-book-btn" style="margin: 0;">PLAY GAME</button>
+                    </div>
+
+                    <div class="page-nav">
+                        <button class="nav-btn prev-btn">Previous</button>
+                        <button class="nav-btn next-btn" disabled>Next</button>
+                    </div>
+                    <div class="page-numbers">Page 4 of 4</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const openBookBtn = document.querySelector('.open-book-btn');
+            const bookContainer = document.querySelector('.book-container');
+            const bookCover = document.querySelector('.book-cover');
+            const bookContent = document.querySelector('.book-content');
+            const closeBtns = document.querySelectorAll('.close-book');
+            const pages = document.querySelectorAll('.page');
+            const prevBtns = document.querySelectorAll('.prev-btn');
+            const nextBtns = document.querySelectorAll('.next-btn');
+            const pageNumbers = document.querySelectorAll('.page-numbers');
+            const playGameBtn = document.querySelector('#page4 .open-book-btn');
+
+            let currentPage = 0;
+
+            openBookBtn.addEventListener('click', () => bookContainer.style.display = 'flex');
+
+            bookCover.addEventListener('click', () => {
+                bookCover.classList.add('open');
+                setTimeout(() => bookContent.style.display = 'block', 500);
+            });
+
+            closeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    bookContent.style.display = 'none';
+                    bookCover.classList.remove('open');
+                    setTimeout(() => {
+                        bookContainer.style.display = 'none';
+                        showPage(0);
+                    }, 500);
+                });
+            });
+
+            function showPage(i) {
+                pages.forEach(p => p.classList.remove('active'));
+                pages[i].classList.add('active');
+                currentPage = i;
+                pageNumbers.forEach(el => el.textContent = `Page ${i + 1} of ${pages.length}`);
+                prevBtns.forEach(btn => btn.disabled = i === 0);
+                nextBtns.forEach(btn => btn.disabled = i === pages.length - 1);
+            }
+
+            prevBtns.forEach(btn => btn.addEventListener('click', () => currentPage > 0 && showPage(currentPage - 1)));
+            nextBtns.forEach(btn => btn.addEventListener('click', () => currentPage < pages.length - 1 && showPage(currentPage + 1)));
+            playGameBtn.addEventListener('click', () => window.location.href = 'deceptionist.html');
+        });
+    </script>
+</body>
+
+</html>
