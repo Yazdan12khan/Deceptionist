@@ -1460,25 +1460,116 @@
                 bfsStartKey = startKey;
 
                 // Bot wall placement logic (simplified)
-                if (rollValue === 6 && wallCounts[color] > 0 && isUnlocked[color] && Math.random() < 0.65) {
-                    // Try to place a wall
-                    const keys = Object.keys(positionToElement);
-                    const validKeys = keys.filter(k => {
-                        if (wallCellToOwner.has(k)) return false;
-                        const cell = positionToElement[k];
-                        return cell && !cell.querySelector('.location-icon');
-                    });
+                // Bot wall placement logic (improved)
+                if (rollValue === 6 && wallCounts[color] > 0 && isUnlocked[color] && Math.random() < 0.9) {
+                    // Strategy: try to block an opponent's next step towards their goal.
+                    const opponents = turnOrder.filter(c => c !== color && !completed[c]);
+                    // Gather candidate block cells (prefer blocking immediate next step)
+                    const blockCandidates = [];
 
-                    if (validKeys.length > 0) {
-                        const randomKey = validKeys[Math.floor(Math.random() * validKeys.length)];
-                        const [r, c] = randomKey.split('-').map(Number);
-                        const placed = placeWall(color, r, c);
-
-                        if (placed) {
-                            clearAllHighlights();
-                            nextTurn();
-                            return;
+                    for (const opp of opponents) {
+                        // Skip opponents that are not unlocked (they can't move yet)
+                        if (!isUnlocked[opp]) continue;
+                        const oppPos = gotis[opp];
+                        if (!oppPos) continue;
+                        const goals = { yellow: centerRed, red: centerYellow, green: centerBlue, blue: centerGreen };
+                        const oppGoal = goals[opp];
+                        const oppPath = computePath([oppPos.r, oppPos.c], oppGoal);
+                        // If opponent has a next step, consider blocking that cell
+                        if (oppPath && oppPath.length > 1) {
+                            const nextStep = oppPath[1];
+                            const key = `${nextStep[0]}-${nextStep[1]}`;
+                            // Skip if there's already a wall, a location icon, or a goti occupying the cell
+                            let occupied = false;
+                            for (const col of allColors) {
+                                const info = gotis[col];
+                                if (!info) continue;
+                                if (info.r === nextStep[0] && info.c === nextStep[1]) {
+                                    occupied = true;
+                                    break;
+                                }
+                            }
+                            if (!occupied && !wallCellToOwner.has(key) && positionToElement[key] && !positionToElement[key].querySelector('.location-icon')) {
+                                blockCandidates.push({ key, priority: 10, opp });
+                            }
                         }
+                    }
+
+                    // If no direct next-step blocks, look for shared-path nodes to block multiple opponents
+                    if (blockCandidates.length === 0) {
+                        const pathCounts = {};
+                        for (const opp of opponents) {
+                            if (!isUnlocked[opp]) continue;
+                            const oppPos = gotis[opp];
+                            if (!oppPos) continue;
+                            const goals = { yellow: centerRed, red: centerYellow, green: centerBlue, blue: centerGreen };
+                            const oppGoal = goals[opp];
+                            const oppPath = computePath([oppPos.r, oppPos.c], oppGoal);
+                            if (!oppPath) continue;
+                            // consider first few steps of their path
+                            for (let i = 1; i < Math.min(6, oppPath.length); i++) {
+                                const k = `${oppPath[i][0]}-${oppPath[i][1]}`;
+                                if (!positionToElement[k]) continue;
+                                if (positionToElement[k].querySelector('.location-icon')) continue;
+                                if (wallCellToOwner.has(k)) continue;
+                                // don't consider cells currently occupied by any goti
+                                let occ = false;
+                                for (const col of allColors) {
+                                    const info = gotis[col];
+                                    if (!info) continue;
+                                    if (info.r === oppPath[i][0] && info.c === oppPath[i][1]) { occ = true; break; }
+                                }
+                                if (occ) continue;
+                                pathCounts[k] = (pathCounts[k] || 0) + 1;
+                            }
+                        }
+                        // Turn pathCounts into candidates with priority based on how many paths cross the cell
+                        for (const k in pathCounts) {
+                            blockCandidates.push({ key: k, priority: 5 + pathCounts[k] });
+                        }
+                    }
+
+                    // Remove any candidates that would block own path to goal
+                    const ownGoal = { yellow: centerRed, red: centerYellow, green: centerBlue, blue: centerGreen }[color];
+                    const ownPath = computePath([gotis[color].r, gotis[color].c], ownGoal) || [];
+                    const ownPathKeys = new Set(ownPath.map(p => `${p[0]}-${p[1]}`));
+                    const finalCandidates = blockCandidates.filter(c => !ownPathKeys.has(c.key));
+
+                    // Try candidates in priority order
+                    finalCandidates.sort((a, b) => b.priority - a.priority);
+                    let placedWall = false;
+                    for (const cand of finalCandidates) {
+                        const [r, c] = cand.key.split('-').map(Number);
+                        if (placeWall(color, r, c)) {
+                            placedWall = true;
+                            break;
+                        }
+                    }
+
+                    // Fallback: random placement but prefer cells on our own forward path (but not start/home icons)
+                    if (!placedWall) {
+                        const keys = Object.keys(positionToElement);
+                        const validKeys = keys.filter(k => {
+                            if (wallCellToOwner.has(k)) return false;
+                            const cell = positionToElement[k];
+                            return cell && !cell.querySelector('.location-icon');
+                        });
+                        // prefer keys on opponent paths or own path
+                        const preferred = validKeys.filter(k => ownPathKeys.has(k));
+                        const pickPool = preferred.length ? preferred : validKeys;
+                        if (pickPool.length > 0) {
+                            const randomKey = pickPool[Math.floor(Math.random() * pickPool.length)];
+                            const [r, c] = randomKey.split('-').map(Number);
+                            if (placeWall(color, r, c)) {
+                                placedWall = true;
+                            }
+                        }
+                    }
+
+                    if (placedWall) {
+                        clearAllHighlights();
+                        nextTurn();
+                        return;
                     }
                 }
 
@@ -1504,21 +1595,55 @@
         function chooseBestTargetForBot(color) {
             const goals = { yellow: centerRed, red: centerYellow, green: centerBlue, blue: centerGreen };
             const goal = goals[color];
+            // Score targets: prefer shorter distance to goal, prefer safety (far from opponents), avoid opponent walls
             let bestKey = null;
-            let bestLen = Infinity;
+            let bestScore = Infinity;
+
+            function manhattan(a, b) {
+                return Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
+            }
+
+            // compute opponent positions
+            const opponents = turnOrder.filter(c => c !== color && !completed[c]);
+            const opponentPositions = opponents.map(c => gotis[c]).filter(p => p);
 
             reachableTargets.forEach(key => {
                 if (key === bfsStartKey) return;
                 const [r, c] = key.split('-').map(Number);
-                const pathToGoal = computePath([r, c], goal);
-                const len = pathToGoal.length - 1;
-                if (len < bestLen) {
-                    bestLen = len;
+                const pathToGoal = computePath([r, c], goal) || [];
+                const len = Math.max(0, pathToGoal.length - 1);
+
+                // safety: distance to nearest opponent
+                let minOppDist = Infinity;
+                for (const op of opponentPositions) {
+                    if (!op) continue;
+                    const d = manhattan([r, c], [op.r, op.c]);
+                    if (d < minOppDist) minOppDist = d;
+                }
+                if (minOppDist === Infinity) minOppDist = 10;
+
+                // walls nearby penalty (especially opponent walls)
+                let wallPenalty = 0;
+                for (let dr = -2; dr <= 2; dr++) {
+                    for (let dc = -2; dc <= 2; dc++) {
+                        const k = `${r + dr}-${c + dc}`;
+                        if (wallCellToOwner.has(k)) {
+                            const w = wallCellToOwner.get(k);
+                            if (w && w.owner !== color) wallPenalty += 1;
+                            else wallPenalty += 0.2;
+                        }
+                    }
+                }
+
+                // score: lower is better
+                const score = len * 10 - Math.min(8, minOppDist) * 3 + wallPenalty * 6;
+                if (score < bestScore) {
+                    bestScore = score;
                     bestKey = key;
                 }
             });
 
-            // Fallback: any target other than start
+            // Fallback: any reachable target other than start
             if (!bestKey) {
                 for (const key of reachableTargets) {
                     if (key !== bfsStartKey) {
@@ -1576,6 +1701,14 @@
             // Prevent wall placement on cells with location icons (starting positions)
             const cell = positionToElement[key];
             if (cell && cell.querySelector('.location-icon')) return false;
+
+            // Prevent placing a wall on a cell occupied by any goti
+            // (don't block the exact cell where a token currently sits)
+            for (const col of allColors) {
+                const info = gotis[col];
+                if (!info) continue;
+                if (info.r === r && info.c === c) return false;
+            }
 
             const ok = renderWallAt(r, c, color);
             if (!ok) return false;
