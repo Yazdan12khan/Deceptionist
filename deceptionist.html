@@ -1892,7 +1892,7 @@
             botColors.forEach(bc => { if (completed[bc]) botsDone++; });
 
             // If all bots finished and user hasn't finished yet, user loses
-            if (botsDone > 3 && botsDone >= botColors.size && !completed[humanColor]) {
+            if (botsDone < 3 && botsDone >= botColors.size && !completed[humanColor]) {
                 playLoseSound();
                 endGameWithMessage('You lose');
                 return;
