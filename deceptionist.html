@@ -946,7 +946,9 @@
             renderWallStacks();
             updateRollButtonState();
             loadSoundSetting();
-            loadGameState();
+            // Do NOT load saved game state on refresh — start fresh every load
+            // Remove any persisted state so refresh always restarts the game
+            try { localStorage.removeItem('deceptionist_game_state'); } catch (e) {}
         }
 
         // Create the game board
@@ -1885,15 +1887,12 @@
             // Record finish order
             finishOrder.push(color);
 
-            // Check if all bots have finished before the human
+            // Check if all bots have finished before the human (uses botColors set)
             let botsDone = 0;
-            if (completed.green) botsDone++;
-            if (completed.blue) botsDone++;
-            if (completed.red) botsDone++;
+            botColors.forEach(bc => { if (completed[bc]) botsDone++; });
 
-            // If all 3 bots finished and user hasn't finished yet, user loses
-            if (botsDone >= 3 && !completed[humanColor]) {
-                // All bots finished before the human -> user loses
+            // If all bots finished and user hasn't finished yet, user loses
+            if (botsDone > 3 && botsDone >= botColors.size && !completed[humanColor]) {
                 playLoseSound();
                 endGameWithMessage('You lose');
                 return;
