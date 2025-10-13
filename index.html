@@ -73,6 +73,31 @@
             transform: translateY(1px);
         }
 
+        .play {
+            background: linear-gradient(135deg, #ff4e50 0%, #f9d423 100%);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(255, 78, 80, 0.3);
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 2rem;
+            text-decoration: none;
+        }
+
+        .play:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(255, 78, 80, 0.4);
+        }
+
+        .play:active {
+            transform: translateY(1px);
+        }
+
         .book-container {
             position: fixed;
             top: 0;
@@ -315,6 +340,8 @@
         <h1 class="game-title">DECEPTIONIST</h1>
         <p class="subtitle">"NOT ALL EXITS ARE ESCAPE"</p>
         <button class="open-book-btn">OPEN RULE BOOK</button>
+        <br>
+        <a class="play" href="./deceptionist.html">Play Now</a>
     </div>
 
     <div class="book-container">

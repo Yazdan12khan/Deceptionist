@@ -1798,6 +1798,16 @@
 
             // Update wall button state
             placeWallBtn.disabled = !isHumanTurn || !canPlaceWallThisTurn || wallCounts[color] <= 0 || !gameActive;
+            // Tint roll and wall buttons to current player's color for clarity
+            const colorMapBtn = {
+                yellow: 'linear-gradient(135deg, #ffd500, #e6c200)',
+                green: 'linear-gradient(135deg, #68DD00, #4db200)',
+                blue: 'linear-gradient(135deg, #3370ff, #2158d8)',
+                red: 'linear-gradient(135deg, #ff4d4d, #ff1f1f)'
+            };
+            const btnBg = colorMapBtn[color] || 'linear-gradient(135deg, #4CAF50, #45a049)';
+            rollBtn.style.background = btnBg;
+            placeWallBtn.style.background = btnBg;
         }
 
         function renderWallStacks() {
