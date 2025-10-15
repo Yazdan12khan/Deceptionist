@@ -2563,7 +2563,9 @@
 
             // Small right offset for locked tokens so they sit slightly to the right of home
             // Use a fraction of the cell width so it scales with board size
-            const shiftRightPct = cellW * 0.12; // ~0.18 of a cell width
+            const shiftRightPct = cellW * 0.18; // ~0.18 of a cell width
+            // Small downward offset so locked tokens aren't flush to the top edge (gives gap from upper)
+            const shiftDownPct = cellH * 0.12; // ~0.12 of a cell height
 
             // Position token visually above its color's wall stack (renderWallStacks order: red, green, yellow, blue)
             const order = { red: 0, green: 1, yellow: 2, blue: 3 };
@@ -2577,15 +2579,16 @@
                 const xAbs = colRect.left + colRect.width / 2;
                 const yAbs = topRect.top - (goti.getBoundingClientRect().height / 2) - 8;
                 let x = ((xAbs - boardRect.left) / boardRect.width) * 100;
-                const y = ((yAbs - boardRect.top) / boardRect.height) * 100;
-                // apply a small right shift
+                let y = ((yAbs - boardRect.top) / boardRect.height) * 100;
+                // apply a small right shift and a small downward shift so token has top gap
                 x = x + shiftRightPct;
+                y = y + shiftDownPct;
                 goti.style.left = Math.min(96, Math.max(2, x)) + '%';
                 goti.style.top = Math.min(96, Math.max(2, y)) + '%';
             } else {
                 // Fallback: center at its start cell edge
                 goti.style.left = (sc * cellW + cellW / 2 + shiftRightPct) + '%';
-                goti.style.top = (sr * cellH + cellH / 2) + '%';
+                goti.style.top = (sr * cellH + cellH / 2 + shiftDownPct) + '%';
             }
 
             gotis[color].r = sr;
