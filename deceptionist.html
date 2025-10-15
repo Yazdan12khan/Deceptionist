@@ -186,6 +186,90 @@
             cursor: not-allowed;
         }
 
+        /* Make mobile buttons and labels match the desktop monitor styling */
+        /* General mobile button base (will be overridden for place-wall) */
+        #roll-btn-mobile,
+        #restart-game-btn-mobile,
+        #view-mobile,
+        #set-mobile {
+            padding: 14px 28px;
+            font-size: 18px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            width: 100%;
+            display: inline-block;
+            text-align: center;
+        }
+
+        #roll-btn-mobile:hover,
+        #restart-game-btn-mobile:hover,
+        #view-mobile:hover,
+        #set-mobile:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        #roll-btn-mobile:disabled {
+            background: #718096;
+            transform: none;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        /* Mobile place-wall button should use the same orange style as desktop */
+        #place-wall-btn-mobile {
+            padding: 10px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #FF9800, #e68900);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        #place-wall-btn-mobile:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+        }
+
+        #place-wall-btn-mobile:disabled {
+            background: #718096;
+            transform: none;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        /* Mobile labels mirror desktop small labels */
+        #you-are-mobile {
+            font-size: 14px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            color: #fff;
+            margin-bottom: 6px;
+            display: inline-block;
+        }
+
+        #current-turn-mobile,
+        #dice-result-mobile,
+        #walls-left-mobile {
+            font-size: 16px;
+            font-weight: bold;
+            color: #e2e8f0;
+        }
+
         #dice-face {
             margin: 10px 0;
             display: inline-block;
@@ -2618,7 +2702,8 @@
             const cellW = 100 / cols;
             const cellH = 100 / rows;
             const normalSize = Math.min(cellW, cellH) * 0.7;
-            const smallSize = Math.min(cellW, cellH) * 0.45;
+            // Make stacked tokens smaller so there's more room, and increase offsets for clearer separation
+            const smallSize = Math.min(cellW, cellH) * 0.38;
             const byCell = new Map();
 
             allColors.forEach(color => {
@@ -2647,12 +2732,12 @@
                 // Define offset patterns inside a cell for up to 4 tokens
                 let offsets;
                 if (colors.length === 2) {
-                    offsets = [[-0.18, -0.18], [0.18, 0.18]];
+                    offsets = [[-0.28, -0.28], [0.28, 0.28]];
                 } else if (colors.length === 3) {
-                    offsets = [[-0.2, -0.2], [0.2, -0.2], [0.0, 0.2]];
+                    offsets = [[-0.32, -0.24], [0.32, -0.24], [0.0, 0.32]];
                 } else {
-                    // 4 or more: use 2x2 grid; extras overlap last positions
-                    offsets = [[-0.2, -0.2], [0.2, -0.2], [-0.2, 0.2], [0.2, 0.2]];
+                    // 4 or more: use 2x2 grid with larger separation; extras overlap last positions
+                    offsets = [[-0.32, -0.32], [0.32, -0.32], [-0.32, 0.32], [0.32, 0.32]];
                 }
 
                 colors.forEach((color, idx) => {
