@@ -514,19 +514,99 @@
             box-shadow: 0 6px 20px rgba(17, 218, 10, 0.4);
         }
 
+        /* Mobile-specific styles */
+        .mobile-controls {
+            display: none;
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .mobile-controls-top {
+            display: none;
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: -100px;
+            margin-bottom: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .mobile-controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .mobile-controls-top-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .mobile-dice-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mobile-buttons-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .mobile-top-left {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .mobile-top-right {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
         /* Responsive adjustments */
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .game-area {
                 flex-direction: column;
+                align-items: center;
+            }
+
+            .board-container {
+                max-width: 90vw;
             }
 
             .controls-container {
-                width: 100%;
-                max-width: 600px;
+                display: none;
+            }
+
+            .mobile-controls {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .mobile-controls-top {
+                display: flex;
+                flex-direction: column;
             }
 
             .outer-box {
                 width: 100%;
+                max-width: 90vw;
             }
 
             .cube {
@@ -572,6 +652,81 @@
                 flex-direction: column;
                 gap: 15px;
             }
+
+            .game-title {
+                font-size: 24px;
+            }
+
+            #restart-game-btn, #view, #set {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-controls-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mobile-controls-top-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* Make the board larger on tablets / small laptops but keep small side gaps */
+            .outer-box {
+                width: calc(100% - 24px);
+                max-width: calc(820px - 24px);
+                margin: 0 12px;
+            }
+            .board-container { width: calc(100% - 24px); max-width: calc(820px - 24px); margin: 0 12px; }
+
+            .grid-container {
+                gap: 0.5vw;
+            }
+
+            .cube {
+                width: 50px;
+                height: 50px;
+            }
+
+            .face {
+                width: 50px;
+                height: 50px;
+            }
+
+            .dot {
+                width: 6px;
+                height: 6px;
+            }
+
+            .front {
+                transform: rotateY(0deg) translateZ(25px);
+            }
+
+            .back {
+                transform: rotateY(180deg) translateZ(25px);
+            }
+
+            .right {
+                transform: rotateY(90deg) translateZ(25px);
+            }
+
+            .left {
+                transform: rotateY(-90deg) translateZ(25px);
+            }
+
+            .top {
+                transform: rotateX(90deg) translateZ(25px);
+            }
+
+            .bottom {
+                transform: rotateX(-90deg) translateZ(25px);
+            }
+
+            #roll-btn, #place-wall-btn {
+                padding: 12px 20px;
+                font-size: 16px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -588,108 +743,70 @@
             }
 
             .game-title {
-                font-size: 26px;
+                font-size: 20px;
+            }
+
+            /* Make the board take almost the full phone width: reduce side gaps to 2px */
+            .outer-box {
+                width: calc(100% - 4px);
+                max-width: 820px;
+                margin: 0 2px;
+            }
+            .board-container { width: calc(100% - 4px); max-width: 820px; margin: 0 2px; }
+
+            .grid-container {
+                gap: 0.8vw;
+            }
+
+            /* Larger dice on very small phones for visibility */
+            .cube {
+                width: 60px;
+                height: 60px;
+            }
+
+            .face {
+                width: 60px;
+                height: 60px;
+            }
+
+            .dot {
+                width: 8px;
+                height: 8px;
+            }
+
+            .front {
+                transform: rotateY(0deg) translateZ(20px);
+            }
+
+            .back {
+                transform: rotateY(180deg) translateZ(20px);
+            }
+
+            .right {
+                transform: rotateY(90deg) translateZ(20px);
+            }
+
+            .left {
+                transform: rotateY(-90deg) translateZ(20px);
+            }
+
+            .top {
+                transform: rotateX(90deg) translateZ(20px);
+            }
+
+            .bottom {
+                transform: rotateX(-90deg) translateZ(20px);
+            }
+
+            #roll-btn, #place-wall-btn {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+
+            #current-turn, #dice-result {
+                font-size: 16px;
             }
         }
-    </style>
-</head>
-
-<body>
-    <div class="container">
-        <div class="game-area">
-            <div class="board-container">
-                <div class="outer-box">
-                    <div class="grid-container" id="grid-container">
-                        <!-- Grid will be generated by JavaScript -->
-                        <div id="wall-stacks"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="controls-container">
-                <div id="dice-container">
-                    <div id="you-are">You are: <strong id="you-color">Yellow</strong></div>
-                    <button id="roll-btn">Roll Dice</button>
-                    <div id="dice-face">
-                        <div class="cube" id="dice">
-                            <!-- 1 -->
-                            <div class="face front">
-                                <div class="dot" style="grid-column:2; grid-row:2;"></div>
-                            </div>
-                            <!-- 6 -->
-                            <div class="face back">
-                                <div class="dot" style="grid-column:1; grid-row:1;"></div>
-                                <div class="dot" style="grid-column:3; grid-row:1;"></div>
-                                <div class="dot" style="grid-column:1; grid-row:2;"></div>
-                                <div class="dot" style="grid-column:3; grid-row:2;"></div>
-                                <div class="dot" style="grid-column:1; grid-row:3;"></div>
-                                <div class="dot" style="grid-column:3; grid-row:3;"></div>
-                            </div>
-                            <!-- 3 -->
-                            <div class="face right">
-                                <div class="dot" style="grid-column:1; grid-row:1;"></div>
-                                <div class="dot" style="grid-column:2; grid-row:2;"></div>
-                                <div class="dot" style="grid-column:3; grid-row:3;"></div>
-                            </div>
-                            <!-- 4 -->
-                            <div class="face left">
-                                <div class="dot" style="grid-column:1; grid-row:1;"></div>
-                                <div class="dot" style="grid-column:3; grid-row:1;"></div>
-                                <div class="dot" style="grid-column:1; grid-row:3;"></div>
-                                <div class="dot" style="grid-column:3; grid-row:3;"></div>
-                            </div>
-                            <!-- 5 -->
-                            <div class="face top">
-                                <div class="dot" style="grid-column:1; grid-row:1;"></div>
-                                <div class="dot" style="grid-column:3; grid-row:1;"></div>
-                                <div class="dot" style="grid-column:2; grid-row:2;"></div>
-                                <div class="dot" style="grid-column:1; grid-row:3;"></div>
-                                <div class="dot" style="grid-column:3; grid-row:3;"></div>
-                            </div>
-                            <!-- 2 -->
-                            <div class="face bottom">
-                                <div class="dot" style="grid-column:1; grid-row:1;"></div>
-                                <div class="dot" style="grid-column:3; grid-row:3;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="current-turn">Current Turn: Yellow</div>
-                    <div id="dice-result" style="font-size: 18px; font-weight: bold; margin-top: -2px; color: #e2e8f0;">
-                        Rolled:
-                    </div>
-                    <div id="wall-controls">
-                        <div id="walls-left">Walls Left: 3</div>
-                        <button id="place-wall-btn" disabled>Place Wall</button>
-                        <br><br>
-                        <button id="restart-game-btn">Restart Game</button>
-                        <br><br>
-                        <a href="./rule_book.html" target="_blank"><button id="view">View Rule Book</button></a>
-                        <br><br>
-                        <button id="set">⚙️Settings</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Settings Modal -->
-    <div id="settings-modal">
-        <div class="settings-card">
-            <h2 class="settings-title">Game Settings</h2>
-
-            <div class="settings-option">
-                <div style="display: flex; align-items: center;">
-                    <span class="sound-icon">🔊</span>
-                    <span class="option-label">Sound</span>
-                </div>
-                <div class="sound-toggle active" id="sound-toggle"></div>
-            </div>
-
-            <button class="close-settings" id="close-settings">Close Settings</button>
-        </div>
-    </div>
-    <style>
-        /* Previous CSS code remains the same until the settings modal styles */
 
         /* Settings Modal Styles */
         #settings-modal {
@@ -818,6 +935,179 @@
             box-shadow: 0 6px 20px rgba(17, 218, 10, 0.4);
         }
     </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Mobile Top Controls -->
+        <div class="mobile-controls-top">
+            <div class="mobile-controls-top-grid">
+                <div class="mobile-top-left">
+                    <div class="game-header">
+                        <div class="game-title">Deceptionist</div>
+                    </div>
+                    <div id="current-turn-mobile">Current Turn: Yellow</div>
+                    <div id="you-are-mobile">You are: <strong id="you-color-mobile">Yellow</strong></div>
+                </div>
+                <div class="mobile-top-right">
+                    <button id="restart-game-btn-mobile">Restart Game</button>
+                    <a href="./rule_book.html" target="_blank"><button id="view-mobile">View Rule Book</button></a>
+                    <button id="set-mobile">⚙️Settings</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="board-container">
+                <div class="outer-box">
+                    <div class="grid-container" id="grid-container">
+                        <!-- Grid will be generated by JavaScript -->
+                        <div id="wall-stacks"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls-container">
+                <div id="dice-container">
+                    <div id="you-are">You are: <strong id="you-color">Yellow</strong></div>
+                    <button id="roll-btn">Roll Dice</button>
+                    <div id="dice-face">
+                        <div class="cube" id="dice">
+                            <!-- 1 -->
+                            <div class="face front">
+                                <div class="dot" style="grid-column:2; grid-row:2;"></div>
+                            </div>
+                            <!-- 6 -->
+                            <div class="face back">
+                                <div class="dot" style="grid-column:1; grid-row:1;"></div>
+                                <div class="dot" style="grid-column:3; grid-row:1;"></div>
+                                <div class="dot" style="grid-column:1; grid-row:2;"></div>
+                                <div class="dot" style="grid-column:3; grid-row:2;"></div>
+                                <div class="dot" style="grid-column:1; grid-row:3;"></div>
+                                <div class="dot" style="grid-column:3; grid-row:3;"></div>
+                            </div>
+                            <!-- 3 -->
+                            <div class="face right">
+                                <div class="dot" style="grid-column:1; grid-row:1;"></div>
+                                <div class="dot" style="grid-column:2; grid-row:2;"></div>
+                                <div class="dot" style="grid-column:3; grid-row:3;"></div>
+                            </div>
+                            <!-- 4 -->
+                            <div class="face left">
+                                <div class="dot" style="grid-column:1; grid-row:1;"></div>
+                                <div class="dot" style="grid-column:3; grid-row:1;"></div>
+                                <div class="dot" style="grid-column:1; grid-row:3;"></div>
+                                <div class="dot" style="grid-column:3; grid-row:3;"></div>
+                            </div>
+                            <!-- 5 -->
+                            <div class="face top">
+                                <div class="dot" style="grid-column:1; grid-row:1;"></div>
+                                <div class="dot" style="grid-column:3; grid-row:1;"></div>
+                                <div class="dot" style="grid-column:2; grid-row:2;"></div>
+                                <div class="dot" style="grid-column:1; grid-row:3;"></div>
+                                <div class="dot" style="grid-column:3; grid-row:3;"></div>
+                            </div>
+                            <!-- 2 -->
+                            <div class="face bottom">
+                                <div class="dot" style="grid-column:1; grid-row:1;"></div>
+                                <div class="dot" style="grid-column:3; grid-row:3;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="current-turn">Current Turn: Yellow</div>
+                    <div id="dice-result" style="font-size: 18px; font-weight: bold; margin-top: -2px; color: #e2e8f0;">
+                        Rolled:
+                    </div>
+                    <div id="wall-controls">
+                        <div id="walls-left">Walls Left: 3</div>
+                        <button id="place-wall-btn" disabled>Place Wall</button>
+                        <br><br>
+                        <button id="restart-game-btn">Restart Game</button>
+                        <br><br>
+                        <a href="./rule_book.html" target="_blank"><button id="view">View Rule Book</button></a>
+                        <br><br>
+                        <button id="set">⚙️Settings</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Bottom Controls -->
+        <div class="mobile-controls">
+            <div class="mobile-controls-grid">
+                <div class="mobile-dice-section">
+                    <div id="dice-face-mobile">
+                        <div class="cube" id="dice-mobile">
+                            <!-- 1 -->
+                            <div class="face front">
+                                <div class="dot" style="grid-column:2; grid-row:2;"></div>
+                            </div>
+                            <!-- 6 -->
+                            <div class="face back">
+                                <div class="dot" style="grid-column:1; grid-row:1;"></div>
+                                <div class="dot" style="grid-column:3; grid-row:1;"></div>
+                                <div class="dot" style="grid-column:1; grid-row:2;"></div>
+                                <div class="dot" style="grid-column:3; grid-row:2;"></div>
+                                <div class="dot" style="grid-column:1; grid-row:3;"></div>
+                                <div class="dot" style="grid-column:3; grid-row:3;"></div>
+                            </div>
+                            <!-- 3 -->
+                            <div class="face right">
+                                <div class="dot" style="grid-column:1; grid-row:1;"></div>
+                                <div class="dot" style="grid-column:2; grid-row:2;"></div>
+                                <div class="dot" style="grid-column:3; grid-row:3;"></div>
+                            </div>
+                            <!-- 4 -->
+                            <div class="face left">
+                                <div class="dot" style="grid-column:1; grid-row:1;"></div>
+                                <div class="dot" style="grid-column:3; grid-row:1;"></div>
+                                <div class="dot" style="grid-column:1; grid-row:3;"></div>
+                                <div class="dot" style="grid-column:3; grid-row:3;"></div>
+                            </div>
+                            <!-- 5 -->
+                            <div class="face top">
+                                <div class="dot" style="grid-column:1; grid-row:1;"></div>
+                                <div class="dot" style="grid-column:3; grid-row:1;"></div>
+                                <div class="dot" style="grid-column:2; grid-row:2;"></div>
+                                <div class="dot" style="grid-column:1; grid-row:3;"></div>
+                                <div class="dot" style="grid-column:3; grid-row:3;"></div>
+                            </div>
+                            <!-- 2 -->
+                            <div class="face bottom">
+                                <div class="dot" style="grid-column:1; grid-row:1;"></div>
+                                <div class="dot" style="grid-column:3; grid-row:3;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="dice-result-mobile" style="font-size: 18px; font-weight: bold; margin-top: -2px; color: #e2e8f0;">
+                        Rolled:
+                    </div>
+                </div>
+                <div class="mobile-buttons-section">
+                    <button id="roll-btn-mobile">Roll Dice</button>
+                    <div id="walls-left-mobile">Walls Left: 3</div>
+                    <button id="place-wall-btn-mobile" disabled>Place Wall</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal">
+        <div class="settings-card">
+            <h2 class="settings-title">Game Settings</h2>
+
+            <div class="settings-option">
+                <div style="display: flex; align-items: center;">
+                    <span class="sound-icon">🔊</span>
+                    <span class="option-label">Sound</span>
+                </div>
+                <div class="sound-toggle active" id="sound-toggle"></div>
+            </div>
+
+            <button class="close-settings" id="close-settings">Close Settings</button>
+        </div>
+    </div>
 
     <!-- Color Selection Screen -->
     <div id="color-selection">
@@ -930,6 +1220,19 @@
         const settingsBtn = document.getElementById('set');
         const closeSettingsBtn = document.getElementById('close-settings');
         const soundToggle = document.getElementById('sound-toggle');
+
+        // Mobile DOM Elements
+        const rollBtnMobile = document.getElementById('roll-btn-mobile');
+        const placeWallBtnMobile = document.getElementById('place-wall-btn-mobile');
+        const wallsLeftElMobile = document.getElementById('walls-left-mobile');
+        const currentTurnElMobile = document.getElementById('current-turn-mobile');
+        const youColorElMobile = document.getElementById('you-color-mobile');
+        const youAreElMobile = document.getElementById('you-are-mobile');
+        const diceResultMobile = document.getElementById('dice-result-mobile');
+        const restartGameBtnMobile = document.getElementById('restart-game-btn-mobile');
+        const viewBtnMobile = document.getElementById('view-mobile');
+        const settingsBtnMobile = document.getElementById('set-mobile');
+        const diceMobile = document.getElementById('dice-mobile');
 
         // Audio elements
         const diceSound = document.getElementById('dice-sound');
@@ -1131,9 +1434,11 @@
         function setupEventListeners() {
             // Roll button
             rollBtn.addEventListener('click', handleRoll);
+            rollBtnMobile.addEventListener('click', handleRoll);
 
             // Place wall button
             placeWallBtn.addEventListener('click', toggleWallPlacement);
+            placeWallBtnMobile.addEventListener('click', toggleWallPlacement);
 
             // Reset button -> clear saved state and navigate back to index.html (full restart)
             resetBtn.addEventListener('click', () => {
@@ -1146,6 +1451,10 @@
                 localStorage.removeItem('deceptionist_game_state');
                 window.location.reload();
             });
+            restartGameBtnMobile.addEventListener('click', () => {
+                localStorage.removeItem('deceptionist_game_state');
+                window.location.reload();
+            });
 
             // Color selection
             colorOptions.forEach(option => {
@@ -1154,7 +1463,9 @@
                     option.classList.add('selected');
                     humanColor = option.dataset.color;
                     const youColorEl = document.getElementById('you-color');
+                    const youColorElMobile = document.getElementById('you-color-mobile');
                     if (youColorEl) youColorEl.textContent = humanColor.charAt(0).toUpperCase() + humanColor.slice(1);
+                    if (youColorElMobile) youColorElMobile.textContent = humanColor.charAt(0).toUpperCase() + humanColor.slice(1);
                 });
             });
 
@@ -1168,6 +1479,7 @@
 
             // Settings button
             settingsBtn.addEventListener('click', openSettings);
+            settingsBtnMobile.addEventListener('click', openSettings);
             closeSettingsBtn.addEventListener('click', closeSettings);
             soundToggle.addEventListener('click', toggleSound);
 
@@ -1216,7 +1528,9 @@
         // Update turn display
         function updateTurnDisplay() {
             const color = turnOrder[currentTurn];
-            currentTurnEl.textContent = `Current Turn: ${color.charAt(0).toUpperCase() + color.slice(1)}`;
+            const displayText = `Current Turn: ${color.charAt(0).toUpperCase() + color.slice(1)}`;
+            currentTurnEl.textContent = displayText;
+            currentTurnElMobile.textContent = displayText;
         }
 
         // Update piece visibility based on active colors
@@ -1257,6 +1571,7 @@
 
             // Enable wall placement button if applicable
             placeWallBtn.disabled = !canPlaceWallThisTurn || wallCounts[color] <= 0;
+            placeWallBtnMobile.disabled = !canPlaceWallThisTurn || wallCounts[color] <= 0;
 
             const gotiData = gotis[color];
 
@@ -1274,6 +1589,7 @@
                     relayoutAllOccupants();
                     canPlaceWallThisTurn = false;
                     placeWallBtn.disabled = true;
+                    placeWallBtnMobile.disabled = true;
 
                     // Auto-advance turn
                     nextTurn();
@@ -1329,6 +1645,7 @@
                     hasPlacedWallThisTurn = true;
                     canPlaceWallThisTurn = false;
                     placeWallBtn.disabled = true;
+                    placeWallBtnMobile.disabled = true;
                     clearAllHighlights();
                     exitWallPlacementMode();
                     nextTurn();
@@ -1345,6 +1662,7 @@
                 // If player chooses to move, they forfeit wall placement this turn
                 canPlaceWallThisTurn = false;
                 placeWallBtn.disabled = true;
+                placeWallBtnMobile.disabled = true;
 
                 if (placingWall) exitWallPlacementMode();
 
@@ -1682,6 +2000,7 @@
                 el.style.outline = '3px dashed rgba(255,255,255,0.5)';
             });
             placeWallBtn.textContent = 'Cancel Wall';
+            placeWallBtnMobile.textContent = 'Cancel Wall';
         }
 
         function exitWallPlacementMode() {
@@ -1690,6 +2009,7 @@
                 el.style.outline = '';
             });
             placeWallBtn.textContent = 'Place Wall';
+            placeWallBtnMobile.textContent = 'Place Wall';
         }
 
         function placeWall(color, r, c) {
@@ -1787,6 +2107,7 @@
             const color = turnOrder[currentTurn] || 'yellow';
             const shown = wallCounts[color];
             wallsLeftEl.textContent = `Walls Left: ${shown}`;
+            wallsLeftElMobile.textContent = `Walls Left: ${shown}`;
         }
 
         function updateRollButtonState() {
@@ -1796,8 +2117,14 @@
             rollBtn.style.opacity = isHumanTurn && gameActive ? '1' : '0.6';
             rollBtn.style.cursor = isHumanTurn && gameActive ? 'pointer' : 'not-allowed';
 
+            rollBtnMobile.disabled = !isHumanTurn || !gameActive;
+            rollBtnMobile.style.opacity = isHumanTurn && gameActive ? '1' : '0.6';
+            rollBtnMobile.style.cursor = isHumanTurn && gameActive ? 'pointer' : 'not-allowed';
+
             // Update wall button state
             placeWallBtn.disabled = !isHumanTurn || !canPlaceWallThisTurn || wallCounts[color] <= 0 || !gameActive;
+            placeWallBtnMobile.disabled = !isHumanTurn || !canPlaceWallThisTurn || wallCounts[color] <= 0 || !gameActive;
+            
             // Tint roll and wall buttons to current player's color for clarity
             const colorMapBtn = {
                 yellow: 'linear-gradient(135deg, #ffd500, #e6c200)',
@@ -1808,6 +2135,8 @@
             const btnBg = colorMapBtn[color] || 'linear-gradient(135deg, #4CAF50, #45a049)';
             rollBtn.style.background = btnBg;
             placeWallBtn.style.background = btnBg;
+            rollBtnMobile.style.background = btnBg;
+            placeWallBtnMobile.style.background = btnBg;
         }
 
         function renderWallStacks() {
@@ -1862,7 +2191,9 @@
             canPlaceWallThisTurn = false;
             hasPlacedWallThisTurn = false;
             placeWallBtn.disabled = true;
+            placeWallBtnMobile.disabled = true;
             placeWallBtn.textContent = 'Place Wall';
+            placeWallBtnMobile.textContent = 'Place Wall';
 
             if (placingWall) exitWallPlacementMode();
 
@@ -1902,7 +2233,7 @@
             botColors.forEach(bc => { if (completed[bc]) botsDone++; });
 
             // If all bots finished and user hasn't finished yet, user loses
-            if (botsDone = 3 && botsDone >= botColors.size && !completed[humanColor]) {
+            if (botsDone < 3 && botsDone >= botColors.size && !completed[humanColor]) {
                 playLoseSound();
                 endGameWithMessage('You lose');
                 return;
@@ -2432,7 +2763,9 @@
 
                 // Update UI elements
                 const youColorEl = document.getElementById('you-color');
+                const youColorElMobile = document.getElementById('you-color-mobile');
                 if (youColorEl) youColorEl.textContent = humanColor.charAt(0).toUpperCase() + humanColor.slice(1);
+                if (youColorElMobile) youColorElMobile.textContent = humanColor.charAt(0).toUpperCase() + humanColor.slice(1);
 
                 // Re-render walls
                 wallCellToOwner.forEach((entry, key) => {
@@ -2458,11 +2791,14 @@
 
         function showDice(num, callback) {
             const dice = document.getElementById('dice');
+            const diceMobile = document.getElementById('dice-mobile');
             const diceResult = document.getElementById('dice-result');
-            if (!dice) return;
+            const diceResultMobile = document.getElementById('dice-result-mobile');
+            if (!dice || !diceMobile) return;
 
             // Show number immediately
             diceResult.textContent = `Rolled: ${num}`;
+            diceResultMobile.textContent = `Rolled: ${num}`;
 
             // rotation mapping
             const rotations = {
@@ -2479,8 +2815,9 @@
             const extraY = 360 * (Math.floor(Math.random() * 3) + 2);
             const extraZ = 360 * (Math.floor(Math.random() * 3) + 2);
 
-            // Apply rotation
+            // Apply rotation to both dice
             dice.style.transform = `rotateX(${x + extraX}deg) rotateY(${y + extraY}deg) rotateZ(${extraZ}deg)`;
+            diceMobile.style.transform = `rotateX(${x + extraX}deg) rotateY(${y + extraY}deg) rotateZ(${extraZ}deg)`;
 
             // Wait for animation to complete, then call callback. Use a fallback timeout to avoid hanging
             if (callback) {
@@ -2489,6 +2826,7 @@
                     if (called) return;
                     called = true;
                     dice.removeEventListener('transitionend', handleTransitionEnd);
+                    diceMobile.removeEventListener('transitionend', handleTransitionEnd);
                     clearTimeout(fallback);
                     callback();
                 };
@@ -2496,9 +2834,11 @@
                     if (called) return;
                     called = true;
                     dice.removeEventListener('transitionend', handleTransitionEnd);
+                    diceMobile.removeEventListener('transitionend', handleTransitionEnd);
                     callback();
                 }, 2000);
                 dice.addEventListener('transitionend', handleTransitionEnd);
+                diceMobile.addEventListener('transitionend', handleTransitionEnd);
             }
         }
 
@@ -2508,7 +2848,9 @@
             // Auto-select yellow by default
             colorOptions[0].classList.add('selected');
             const youColorEl = document.getElementById('you-color');
+            const youColorElMobile = document.getElementById('you-color-mobile');
             if (youColorEl) youColorEl.textContent = humanColor.charAt(0).toUpperCase() + humanColor.slice(1);
+            if (youColorElMobile) youColorElMobile.textContent = humanColor.charAt(0).toUpperCase() + humanColor.slice(1);
         });
 
         window.addEventListener('resize', () => {
