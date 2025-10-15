@@ -661,6 +661,13 @@
             gap: 10px;
         }
 
+        /* Hide non-essential buttons on mobile to reduce clutter */
+        #restart-game-btn-mobile,
+        #view-mobile,
+        #set-mobile {
+            display: none !important;
+        }
+
         /* Responsive adjustments */
         @media (max-width: 1024px) {
             .game-area {
@@ -1027,6 +1034,11 @@
                 <div class="mobile-top-left">
                     <div id="current-turn-mobile">Current Turn: Yellow</div>
                     <div id="you-are-mobile">You are: <strong id="you-color-mobile">Yellow</strong></div>
+                </div>
+                <div class="mobile-top-right">
+                    <button id="restart-game-btn-mobile">Restart Game</button>
+                    <a href="./rule_book.html" target="_blank"><button id="view-mobile">View Rule Book</button></a>
+                    <button id="set-mobile">⚙️Settings</button>
                 </div>
             </div>
         </div>
