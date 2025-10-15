@@ -2561,6 +2561,10 @@
             const starts = { yellow: startYellow, green: startGreen, blue: startBlue, red: startRed };
             const [sr, sc] = starts[color];
 
+            // Small right offset for locked tokens so they sit slightly to the right of home
+            // Use a fraction of the cell width so it scales with board size
+            const shiftRightPct = cellW * 0.12; // ~0.18 of a cell width
+
             // Position token visually above its color's wall stack (renderWallStacks order: red, green, yellow, blue)
             const order = { red: 0, green: 1, yellow: 2, blue: 3 };
             const wallStacks = document.getElementById('wall-stacks');
@@ -2572,13 +2576,15 @@
                 const boardRect = document.querySelector('.outer-box').getBoundingClientRect();
                 const xAbs = colRect.left + colRect.width / 2;
                 const yAbs = topRect.top - (goti.getBoundingClientRect().height / 2) - 8;
-                const x = ((xAbs - boardRect.left) / boardRect.width) * 100;
+                let x = ((xAbs - boardRect.left) / boardRect.width) * 100;
                 const y = ((yAbs - boardRect.top) / boardRect.height) * 100;
+                // apply a small right shift
+                x = x + shiftRightPct;
                 goti.style.left = Math.min(96, Math.max(2, x)) + '%';
                 goti.style.top = Math.min(96, Math.max(2, y)) + '%';
             } else {
                 // Fallback: center at its start cell edge
-                goti.style.left = (sc * cellW + cellW / 2) + '%';
+                goti.style.left = (sc * cellW + cellW / 2 + shiftRightPct) + '%';
                 goti.style.top = (sr * cellH + cellH / 2) + '%';
             }
 
