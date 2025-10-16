@@ -746,7 +746,9 @@
                 font-size: 24px;
             }
 
-            #restart-game-btn, #view, #set {
+            #restart-game-btn,
+            #view,
+            #set {
                 padding: 8px 16px;
                 font-size: 14px;
             }
@@ -767,7 +769,12 @@
                 max-width: calc(820px - 24px);
                 margin: 0 12px;
             }
-            .board-container { width: calc(100% - 24px); max-width: calc(820px - 24px); margin: 0 12px; }
+
+            .board-container {
+                width: calc(100% - 24px);
+                max-width: calc(820px - 24px);
+                margin: 0 12px;
+            }
 
             .grid-container {
                 gap: 0.5vw;
@@ -812,7 +819,8 @@
                 transform: rotateX(-90deg) translateZ(25px);
             }
 
-            #roll-btn, #place-wall-btn {
+            #roll-btn,
+            #place-wall-btn {
                 padding: 12px 20px;
                 font-size: 16px;
             }
@@ -841,7 +849,12 @@
                 max-width: 820px;
                 margin: 0 2px;
             }
-            .board-container { width: calc(100% - 4px); max-width: 820px; margin: 0 2px; }
+
+            .board-container {
+                width: calc(100% - 4px);
+                max-width: 820px;
+                margin: 0 2px;
+            }
 
             .grid-container {
                 gap: 0.8vw;
@@ -887,12 +900,14 @@
                 transform: rotateX(-90deg) translateZ(20px);
             }
 
-            #roll-btn, #place-wall-btn {
+            #roll-btn,
+            #place-wall-btn {
                 padding: 10px 16px;
                 font-size: 14px;
             }
 
-            #current-turn, #dice-result {
+            #current-turn,
+            #dice-result {
                 font-size: 16px;
             }
         }
@@ -1165,7 +1180,8 @@
                             </div>
                         </div>
                     </div>
-                    <div id="dice-result-mobile" style="font-size: 18px; font-weight: bold; margin-top: -2px; color: #e2e8f0;">
+                    <div id="dice-result-mobile"
+                        style="font-size: 18px; font-weight: bold; margin-top: -2px; color: #e2e8f0;">
                         Rolled:
                     </div>
                 </div>
@@ -1337,7 +1353,7 @@
             loadSoundSetting();
             // Do NOT load saved game state on refresh — start fresh every load
             // Remove any persisted state so refresh always restarts the game
-            try { localStorage.removeItem('deceptionist_game_state'); } catch (e) {}
+            try { localStorage.removeItem('deceptionist_game_state'); } catch (e) { }
         }
 
         // Create the game board
@@ -2210,7 +2226,7 @@
             // Update wall button state
             placeWallBtn.disabled = !isHumanTurn || !canPlaceWallThisTurn || wallCounts[color] <= 0 || !gameActive;
             placeWallBtnMobile.disabled = !isHumanTurn || !canPlaceWallThisTurn || wallCounts[color] <= 0 || !gameActive;
-            
+
             // Tint roll and wall buttons to current player's color for clarity
             const colorMapBtn = {
                 yellow: 'linear-gradient(135deg, #ffd500, #e6c200)',
@@ -2292,8 +2308,8 @@
         }
 
         function showWin(color) {
-            gameActive = false; // Stop the game
-            completed[color] = true;
+            gameActive = false; // Stop the game temporarily
+            completed[color] = true; // Mark this color as completed
 
             // Move winning goti to their wall stack position
             moveGotiToWallPosition(color);
@@ -2309,37 +2325,36 @@
                 currentTurn = currentTurn % turnOrder.length;
             }
 
+            // Refresh layout to update visuals
             relayoutAllOccupants();
 
-            // Record finish order
+            // Record this color’s finishing position
             finishOrder.push(color);
 
-            // Check if all bots have finished before the human (uses botColors set)
+            // Count how many bots have finished
             let botsDone = 0;
             botColors.forEach(bc => { if (completed[bc]) botsDone++; });
 
-            // If all bots finished and user hasn't finished yet, user loses
-            if (botsDone < 3 && botsDone >= botColors.size && !completed[humanColor]) {
+            // ✅ If all bots (3) have finished and human hasn't, user loses immediately
+            if (botsDone === botColors.size && !completed[humanColor]) {
                 playLoseSound();
-                endGameWithMessage('You lose');
+                endGameWithMessage('You lose! All bots finished before you.');
                 return;
             }
 
-            // Otherwise, play win sound for this finisher (bot or human)
+            // Play win sound for whoever finished (bot or human)
             playWinSound();
 
+            // If no turns are left, end the game safely
             if (!turnOrder.length) {
-                // Safety end if nothing left
                 endGameWithMessage('Game Over');
                 return;
             }
 
-            // 1v3 logic
+            // ✅ If human finished, determine rank
             if (color === humanColor) {
-                // Human finished; show position and end game immediately
                 const rank = finishOrder.indexOf(humanColor) + 1;
                 if (rank === 1) {
-                    // Human is first
                     playWinSound();
                     endGameWithMessage('You win! 1st position');
                 } else if (rank === 2) {
@@ -2347,31 +2362,16 @@
                 } else if (rank === 3) {
                     endGameWithMessage('You got 3rd position');
                 }
-                // If human was not first, do not end the game as "win" here — return to continue or end based on remaining players
-                // For 1v3 setup we still stop here
+                // Stop here since human has finished
                 return;
             }
 
-            // Bot finished - continue game until user finishes or all bots finish
-            // Count completed bots
-            botsDone = 0;
-            if (completed.green) botsDone++;
-            if (completed.blue) botsDone++;
-            if (completed.red) botsDone++;
-
-            // If all 3 bots finished and user hasn't finished yet, user loses
-            if (botsDone >= 3 && !completed[humanColor]) {
-                // All bots finished before the human -> user loses
-                playLoseSound();
-                endGameWithMessage('You lose');
-                return;
-            }
-
-            // Continue game for remaining players
-            gameActive = true; // Resume the game
+            // ✅ If game still has players left, continue normally
+            gameActive = true;
             updateRollButtonState();
             nextTurn(true);
         }
+
 
         function endGameWithMessage(message) {
             gameActive = false; // Stop the game
