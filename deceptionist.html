@@ -2338,7 +2338,7 @@
             // ✅ If all bots (3) have finished and human hasn't, user loses immediately
             if (botsDone === botColors.size && !completed[humanColor]) {
                 playLoseSound();
-                endGameWithMessage('You lose! All bots finished before you.');
+                endGameWithMessage('You Lose! Read & Understand Rules.');
                 return;
             }
 
@@ -2356,11 +2356,11 @@
                 const rank = finishOrder.indexOf(humanColor) + 1;
                 if (rank === 1) {
                     playWinSound();
-                    endGameWithMessage('You win! 1st position');
+                    endGameWithMessage('You Win! You Got 1st Position');
                 } else if (rank === 2) {
-                    endGameWithMessage('You got 2nd position');
+                    endGameWithMessage('You Got 2nd Position, Better Luck Next Time!');
                 } else if (rank === 3) {
-                    endGameWithMessage('You got 3rd position');
+                    endGameWithMessage('You Got 3rd Position, Try Again!');
                 }
                 // Stop here since human has finished
                 return;
