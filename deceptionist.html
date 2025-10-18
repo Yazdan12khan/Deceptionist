@@ -270,6 +270,78 @@
             color: #e2e8f0;
         }
 
+        /* Global overlay + modal for onboarding / 6-info */
+        .info-overlay {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .info-modal {
+            background: #000;
+            color: #fff;
+            padding: 20px 22px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            max-width: 420px;
+            width: 92%;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .info-modal p { margin: 10px 0 18px; font-size: 16px; line-height: 1.3; }
+
+        .info-modal .ok-btn {
+            padding: 10px 18px;
+            background: #fff;
+            color: #000;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Roll button glow when modal active */
+        .glow {
+            box-shadow: 0 0 18px 6px rgba(255, 255, 255, 0.08), 0 0 40px 8px rgba(255,255,0,0.18) !important;
+            animation: pulseGlow 1.6s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 8px rgba(255,255,255,0.04), 0 0 20px rgba(255,255,0,0.08); }
+            50% { box-shadow: 0 0 22px rgba(255,255,255,0.06), 0 0 48px rgba(255,255,0,0.22); }
+            100% { box-shadow: 0 0 8px rgba(255,255,255,0.04), 0 0 20px rgba(255,255,0,0.08); }
+        }
+
+        /* Entry arrows container positioned inside outer-box */
+        .entry-arrow {
+            position: absolute;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1200;
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.6));
+            transform-origin: center;
+            animation: arrowFloat 1.6s ease-in-out infinite;
+        }
+
+        .entry-arrow svg { width: 100%; height: 100%; }
+
+        @keyframes arrowFloat {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+            100% { transform: translateY(0); }
+        }
+
         #dice-face {
             margin: 10px 0;
             display: inline-block;
@@ -1211,6 +1283,22 @@
         </div>
     </div>
 
+    <!-- Onboarding Info Modal shown when user starts the game -->
+    <div id="onboarding-overlay" class="info-overlay">
+        <div class="info-modal" id="onboarding-modal">
+            <p id="onboarding-text">You are <strong id="onboarding-color">Yellow</strong>. You have to escape from our opposite entry point. Click roll dice</p>
+            <button class="ok-btn" id="onboarding-ok">OK</button>
+        </div>
+    </div>
+
+    <!-- Six-info Modal shown when user rolls a 6 for the first time in a turn (explanation) -->
+    <div id="six-overlay" class="info-overlay">
+        <div class="info-modal" id="six-modal">
+            <p>When ever 6 is come you have 2 mode: move token or place wall to block any other — use it strategically.</p>
+            <button class="ok-btn" id="six-ok">OK</button>
+        </div>
+    </div>
+
     <!-- Color Selection Screen -->
     <div id="color-selection">
         <div class="selection-card">
@@ -1355,6 +1443,69 @@
             // Remove any persisted state so refresh always restarts the game
             try { localStorage.removeItem('deceptionist_game_state'); } catch (e) { }
         }
+
+        /* Modal helpers for onboarding and six-info */
+        const onboardingOverlay = document.getElementById('onboarding-overlay');
+        const onboardingOk = document.getElementById('onboarding-ok');
+        const onboardingTextEl = document.getElementById('onboarding-text');
+
+    const sixOverlay = document.getElementById('six-overlay');
+    const sixOk = document.getElementById('six-ok');
+
+    let botSpeedMultiplier = 3; // default faster bots (2x)
+    // track how many 6's the human player has rolled; only show modal on 2nd 6
+    const humanSixCount = { yellow: 0, green: 0, blue: 0, red: 0 };
+    const sixModalShownFor = { yellow: false, green: false, blue: false, red: false };
+    let shouldSpeedOnSixOk = false;
+
+        function showOnboardingFor(color) {
+            const colorName = color.charAt(0).toUpperCase() + color.slice(1);
+            const oppositeMap = { yellow: 'Red', red: 'Yellow', green: 'Blue', blue: 'Green' };
+            const opposite = oppositeMap[color] || '';
+            const onboardingText = document.getElementById('onboarding-text');
+            if (onboardingText) onboardingText.innerHTML = `You are <strong>${colorName}</strong>. You have to escape from <strong>${opposite}</strong>.`;
+            onboardingOverlay.style.display = 'flex';
+            // add glow to roll buttons to draw attention
+            rollBtn.classList.add('glow');
+            rollBtnMobile.classList.add('glow');
+        }
+
+        function hideOnboarding() {
+            onboardingOverlay.style.display = 'none';
+            rollBtn.classList.remove('glow');
+            rollBtnMobile.classList.remove('glow');
+        }
+
+        function showSixInfo() {
+            sixOverlay.style.display = 'flex';
+            // dark overlay already blocks page; highlight place wall button
+            placeWallBtn.classList.add('glow');
+            placeWallBtnMobile.classList.add('glow');
+        }
+
+        function hideSixInfo() {
+            sixOverlay.style.display = 'none';
+            placeWallBtn.classList.remove('glow');
+            placeWallBtnMobile.classList.remove('glow');
+        }
+
+        onboardingOk?.addEventListener('click', () => {
+            hideOnboarding();
+            // start the game normally (unpause)
+            applyMode(currentMode);
+            updateAllGotiSizes();
+            updateRollButtonState();
+            botTakeTurnIfNeeded();
+        });
+
+        sixOk?.addEventListener('click', () => {
+            // hide and set bot speed 2x only if flagged
+            hideSixInfo();
+            if (shouldSpeedOnSixOk) {
+                botSpeedMultiplier = 2;
+                shouldSpeedOnSixOk = false;
+            }
+        });
 
         // Create the game board
         function createBoard() {
@@ -1530,6 +1681,8 @@
                 gotis[color] = { goti: goti, r: startPos[0], c: startPos[1] };
                 currentPositions[color] = 0;
             });
+            // render entry arrows
+            renderEntryArrows();
         }
 
         // Setup event listeners
@@ -1593,11 +1746,10 @@
 
         // Start the game after color selection
         function startGame() {
+            // hide color selection UI, but show onboarding modal first
             colorSelection.style.display = 'none';
-            applyMode(currentMode);
-            updateAllGotiSizes();
-            updateRollButtonState();
-            botTakeTurnIfNeeded();
+            // show onboarding overlay with the chosen human color and pause until OK
+            showOnboardingFor(humanColor);
         }
 
         // Apply mode settings
@@ -1677,8 +1829,31 @@
 
             const gotiData = gotis[color];
 
-            // Process roll after animation; showDice handles transitionend and a fallback timeout
-            showDice(rollValue, () => processRoll(color, gotiData));
+            // If human rolled a 6, handle special modal logic: show modal only on second 6 for this color
+            if (!botColors.has(color) && rollValue === 6) {
+                humanSixCount[color] = (humanSixCount[color] || 0) + 1;
+                // show modal only on the second 6 and only once per color
+                if (humanSixCount[color] === 2 && !sixModalShownFor[color]) {
+                    sixModalShownFor[color] = true;
+                    // mark that on OK we should speed up bots
+                    shouldSpeedOnSixOk = true;
+                    showSixInfo();
+                    // after OK, process the roll (sixOk listener will set speed if flagged)
+                    const onceHandler = () => {
+                        sixOk.removeEventListener('click', onceHandler);
+                        processRoll(color, gotiData);
+                    };
+                    sixOk.addEventListener('click', onceHandler);
+                    // ensure the dice animation completes as well — we still call showDice with callback
+                    showDice(rollValue, () => {});
+                } else {
+                    // Not the second 6 (either first or subsequent) — just process normally
+                    showDice(rollValue, () => processRoll(color, gotiData));
+                }
+            } else {
+                // Process roll after animation; showDice handles transitionend and a fallback timeout
+                showDice(rollValue, () => processRoll(color, gotiData));
+            }
         }
 
         // Process the roll result
@@ -1801,7 +1976,9 @@
                     gotiData.c = c;
                     stepIndex++;
 
-                    setTimeout(stepAnim, 450);
+                    // speed up bot movement when bots are faster
+                    const delay = botColors.has(color) ? Math.max(80, 450 / Math.max(1, botSpeedMultiplier)) : 450;
+                    setTimeout(stepAnim, delay);
                 } else {
                     // Done moving
                     // Stop movement sound
@@ -2009,7 +2186,7 @@
                     } else {
                         nextTurn();
                     }
-                }, 400);
+                }, 400 / Math.max(1, botSpeedMultiplier));
             });
         }
 
@@ -2302,7 +2479,7 @@
             clearAllHighlights();
 
             // If it's a bot's turn, let it play automatically
-            setTimeout(botTakeTurnIfNeeded, 500);
+            setTimeout(botTakeTurnIfNeeded, 500 / Math.max(1, botSpeedMultiplier));
             // persist state after turn advances
             saveGameState();
         }
@@ -2943,7 +3120,59 @@
         window.addEventListener('resize', () => {
             updateAllGotiSizes();
             renderWallStacks();
+            renderEntryArrows();
         });
+
+        // Create animated arrows outside entry points
+        function renderEntryArrows() {
+            // remove existing
+            document.querySelectorAll('.entry-arrow').forEach(e => e.remove());
+            const outer = document.querySelector('.outer-box');
+            if (!outer) return;
+
+            const map = [
+                { entry: '0-8', owner: 'yellow', arrowColor: 'red', dir: 'up' },
+                { entry: '13-8', owner: 'red', arrowColor: 'yellow', dir: 'down' },
+                { entry: '7-0', owner: '#68DD00', arrowColor: 'blue', dir: 'left' },
+                { entry: '7-16', owner: 'blue', arrowColor: '#68DD00', dir: 'right' }
+            ];
+
+            map.forEach(cfg => {
+                const el = positionToElement[cfg.entry];
+                if (!el) return;
+                const rect = el.getBoundingClientRect();
+                const boardRect = outer.getBoundingClientRect();
+                // compute position just outside the cell toward the outside
+                const arrow = document.createElement('div');
+                arrow.className = 'entry-arrow';
+                // color
+                arrow.style.background = 'transparent';
+
+                // SVG arrow depending on dir
+                let svg = '';
+                const fill = cfg.arrowColor;
+                if (cfg.dir === 'up') {
+                    svg = `<svg viewBox="0 0 24 24" fill="${fill}" xmlns="http://www.w3.org/2000/svg"><path d="M12 2 L20 14 H4 L12 2 Z"/></svg>`;
+                    arrow.style.left = ((rect.left + rect.right) / 2 - boardRect.left - 18) + 'px';
+                    arrow.style.top = (rect.top - boardRect.top - 46) + 'px';
+                } else if (cfg.dir === 'down') {
+                    svg = `<svg viewBox="0 0 24 24" fill="${fill}" xmlns="http://www.w3.org/2000/svg"><path d="M12 22 L4 10 H20 L12 22 Z"/></svg>`;
+                    arrow.style.left = ((rect.left + rect.right) / 2 - boardRect.left - 18) + 'px';
+                    arrow.style.top = (rect.bottom - boardRect.top + 12) + 'px';
+                } else if (cfg.dir === 'left') {
+                    svg = `<svg viewBox="0 0 24 24" fill="${fill}" xmlns="http://www.w3.org/2000/svg"><path d="M2 12 L14 4 V20 L2 12 Z"/></svg>`;
+                    arrow.style.left = (rect.left - boardRect.left - 46) + 'px';
+                    arrow.style.top = ((rect.top + rect.bottom) / 2 - boardRect.top - 18) + 'px';
+                } else if (cfg.dir === 'right') {
+                    svg = `<svg viewBox="0 0 24 24" fill="${fill}" xmlns="http://www.w3.org/2000/svg"><path d="M22 12 L10 20 V4 L22 12 Z"/></svg>`;
+                    arrow.style.left = (rect.right - boardRect.left + 12) + 'px';
+                    arrow.style.top = ((rect.top + rect.bottom) / 2 - boardRect.top - 18) + 'px';
+                }
+
+                arrow.innerHTML = svg;
+                outer.appendChild(arrow);
+            });
+        }
     </script>
 </body>
 
