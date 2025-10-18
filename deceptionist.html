@@ -277,7 +277,7 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0, 0, 0, 0.7);
             display: none;
             align-items: center;
             justify-content: center;
@@ -289,14 +289,18 @@
             color: #fff;
             padding: 20px 22px;
             border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
             max-width: 420px;
             width: 92%;
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.06);
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        .info-modal p { margin: 10px 0 18px; font-size: 16px; line-height: 1.3; }
+        .info-modal p {
+            margin: 10px 0 18px;
+            font-size: 16px;
+            line-height: 1.3;
+        }
 
         .info-modal .ok-btn {
             padding: 10px 18px;
@@ -310,14 +314,22 @@
 
         /* Roll button glow when modal active */
         .glow {
-            box-shadow: 0 0 18px 6px rgba(255, 255, 255, 0.08), 0 0 40px 8px rgba(255,255,0,0.18) !important;
+            box-shadow: 0 0 18px 6px rgba(255, 255, 255, 0.08), 0 0 40px 8px rgba(255, 255, 0, 0.18) !important;
             animation: pulseGlow 1.6s infinite;
         }
 
         @keyframes pulseGlow {
-            0% { box-shadow: 0 0 8px rgba(255,255,255,0.04), 0 0 20px rgba(255,255,0,0.08); }
-            50% { box-shadow: 0 0 22px rgba(255,255,255,0.06), 0 0 48px rgba(255,255,0,0.22); }
-            100% { box-shadow: 0 0 8px rgba(255,255,255,0.04), 0 0 20px rgba(255,255,0,0.08); }
+            0% {
+                box-shadow: 0 0 8px rgba(255, 255, 255, 0.04), 0 0 20px rgba(255, 255, 0, 0.08);
+            }
+
+            50% {
+                box-shadow: 0 0 22px rgba(255, 255, 255, 0.06), 0 0 48px rgba(255, 255, 0, 0.22);
+            }
+
+            100% {
+                box-shadow: 0 0 8px rgba(255, 255, 255, 0.04), 0 0 20px rgba(255, 255, 0, 0.08);
+            }
         }
 
         /* Entry arrows container positioned inside outer-box */
@@ -329,17 +341,28 @@
             align-items: center;
             justify-content: center;
             z-index: 1200;
-            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.6));
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.6));
             transform-origin: center;
             animation: arrowFloat 1.6s ease-in-out infinite;
         }
 
-        .entry-arrow svg { width: 100%; height: 100%; }
+        .entry-arrow svg {
+            width: 100%;
+            height: 100%;
+        }
 
         @keyframes arrowFloat {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
-            100% { transform: translateY(0); }
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-6px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
         }
 
         #dice-face {
@@ -1286,7 +1309,8 @@
     <!-- Onboarding Info Modal shown when user starts the game -->
     <div id="onboarding-overlay" class="info-overlay">
         <div class="info-modal" id="onboarding-modal">
-            <p id="onboarding-text">You are <strong id="onboarding-color">Yellow</strong>. You have to escape from our opposite entry point. Click roll dice</p>
+            <p id="onboarding-text">You are <strong id="onboarding-color">Yellow</strong>. You have to escape from our
+                opposite entry point. Click roll dice</p>
             <button class="ok-btn" id="onboarding-ok">OK</button>
         </div>
     </div>
@@ -1294,7 +1318,8 @@
     <!-- Six-info Modal shown when user rolls a 6 for the first time in a turn (explanation) -->
     <div id="six-overlay" class="info-overlay">
         <div class="info-modal" id="six-modal">
-            <p>When ever 6 is come you have 2 mode: move token or place wall to block any other — use it strategically.</p>
+            <p>When ever 6 is come you have 2 mode: move token or place wall to block any other — use it strategically.
+            </p>
             <button class="ok-btn" id="six-ok">OK</button>
         </div>
     </div>
@@ -1449,14 +1474,14 @@
         const onboardingOk = document.getElementById('onboarding-ok');
         const onboardingTextEl = document.getElementById('onboarding-text');
 
-    const sixOverlay = document.getElementById('six-overlay');
-    const sixOk = document.getElementById('six-ok');
+        const sixOverlay = document.getElementById('six-overlay');
+        const sixOk = document.getElementById('six-ok');
 
-    let botSpeedMultiplier = 3; // default faster bots (2x)
-    // track how many 6's the human player has rolled; only show modal on 2nd 6
-    const humanSixCount = { yellow: 0, green: 0, blue: 0, red: 0 };
-    const sixModalShownFor = { yellow: false, green: false, blue: false, red: false };
-    let shouldSpeedOnSixOk = false;
+        let botSpeedMultiplier = 3; // default faster bots (2x)
+        // track how many 6's the human player has rolled; only show modal on 2nd 6
+        const humanSixCount = { yellow: 0, green: 0, blue: 0, red: 0 };
+        const sixModalShownFor = { yellow: false, green: false, blue: false, red: false };
+        let shouldSpeedOnSixOk = false;
 
         function showOnboardingFor(color) {
             const colorName = color.charAt(0).toUpperCase() + color.slice(1);
@@ -1845,7 +1870,7 @@
                     };
                     sixOk.addEventListener('click', onceHandler);
                     // ensure the dice animation completes as well — we still call showDice with callback
-                    showDice(rollValue, () => {});
+                    showDice(rollValue, () => { });
                 } else {
                     // Not the second 6 (either first or subsequent) — just process normally
                     showDice(rollValue, () => processRoll(color, gotiData));
@@ -3124,6 +3149,7 @@
         });
 
         // Create animated arrows outside entry points
+        // Create animated arrows outside entry points
         function renderEntryArrows() {
             // remove existing
             document.querySelectorAll('.entry-arrow').forEach(e => e.remove());
@@ -3142,31 +3168,46 @@
                 if (!el) return;
                 const rect = el.getBoundingClientRect();
                 const boardRect = outer.getBoundingClientRect();
-                // compute position just outside the cell toward the outside
+
+                // compute position completely outside the board
                 const arrow = document.createElement('div');
                 arrow.className = 'entry-arrow';
-                // color
                 arrow.style.background = 'transparent';
 
                 // SVG arrow depending on dir
                 let svg = '';
                 const fill = cfg.arrowColor;
+                const arrowSize = 36; // arrow size in pixels
+                const marginU = 19; // distance from board edge
+                const marginB = 16; // distance from board edge
+                const marginR = 14; // distance from board edge
+                const marginL = 18; // distance from board edge
+                const rightMargin = -2; // 2px right margin for all arrows
+
                 if (cfg.dir === 'up') {
                     svg = `<svg viewBox="0 0 24 24" fill="${fill}" xmlns="http://www.w3.org/2000/svg"><path d="M12 2 L20 14 H4 L12 2 Z"/></svg>`;
-                    arrow.style.left = ((rect.left + rect.right) / 2 - boardRect.left - 18) + 'px';
-                    arrow.style.top = (rect.top - boardRect.top - 46) + 'px';
+                    // Top arrow with 2px right margin
+                    arrow.style.left = '48%';
+                    arrow.style.top = (-marginU) + 'px';
+                    arrow.style.transform = `translateX(calc(-50% + ${rightMargin}px))`;
                 } else if (cfg.dir === 'down') {
                     svg = `<svg viewBox="0 0 24 24" fill="${fill}" xmlns="http://www.w3.org/2000/svg"><path d="M12 22 L4 10 H20 L12 22 Z"/></svg>`;
-                    arrow.style.left = ((rect.left + rect.right) / 2 - boardRect.left - 18) + 'px';
-                    arrow.style.top = (rect.bottom - boardRect.top + 12) + 'px';
+                    // Bottom arrow with 2px right margin
+                    arrow.style.left = '48%';
+                    arrow.style.top = (boardRect.height - arrowSize + marginB) + 'px';
+                    arrow.style.transform = `translateX(calc(-50% + ${rightMargin}px))`;
                 } else if (cfg.dir === 'left') {
                     svg = `<svg viewBox="0 0 24 24" fill="${fill}" xmlns="http://www.w3.org/2000/svg"><path d="M2 12 L14 4 V20 L2 12 Z"/></svg>`;
-                    arrow.style.left = (rect.left - boardRect.left - 46) + 'px';
-                    arrow.style.top = ((rect.top + rect.bottom) / 2 - boardRect.top - 18) + 'px';
+                    // Left arrow with 2px right margin
+                    arrow.style.left = (-marginL + rightMargin) + 'px';
+                    arrow.style.top = '51%';
+                    arrow.style.transform = 'translateY(-50%)';
                 } else if (cfg.dir === 'right') {
                     svg = `<svg viewBox="0 0 24 24" fill="${fill}" xmlns="http://www.w3.org/2000/svg"><path d="M22 12 L10 20 V4 L22 12 Z"/></svg>`;
-                    arrow.style.left = (rect.right - boardRect.left + 12) + 'px';
-                    arrow.style.top = ((rect.top + rect.bottom) / 2 - boardRect.top - 18) + 'px';
+                    // Right arrow with 2px right margin
+                    arrow.style.left = (boardRect.width - arrowSize + marginR + rightMargin) + 'px';
+                    arrow.style.top = '51%';
+                    arrow.style.transform = 'translateY(-50%)';
                 }
 
                 arrow.innerHTML = svg;
