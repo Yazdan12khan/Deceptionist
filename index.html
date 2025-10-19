@@ -22,6 +22,7 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            overflow-x: hidden;
         }
 
         .container {
@@ -31,9 +32,9 @@
         }
 
         .game-title {
-            font-size: 3.5rem;
+            font-size: clamp(2rem, 5vw, 3.5rem);
             font-weight: 700;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             background: linear-gradient(to right, #f9d423, #ff4e50);
             -webkit-background-clip: text;
             background-clip: text;
@@ -43,77 +44,58 @@
         }
 
         .subtitle {
-            font-size: 1.2rem;
-            margin-bottom: 3rem;
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            margin-bottom: 2.5rem;
             color: #a0a0c0;
             font-weight: 300;
         }
 
-        .open-book-btn {
-            background: linear-gradient(135deg, #ff4e50 0%, #f9d423 100%);
-            color: white;
-            border: none;
-            padding: 16px 40px;
-            font-size: 1.2rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 20px rgba(255, 78, 80, 0.3);
-            font-weight: 600;
-            letter-spacing: 1px;
-            margin-bottom: 2rem;
-        }
-
-        .open-book-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(255, 78, 80, 0.4);
-        }
-
-        .open-book-btn:active {
-            transform: translateY(1px);
-        }
-
+        .open-book-btn,
         .play {
+            display: inline-block;
             background: linear-gradient(135deg, #ff4e50 0%, #f9d423 100%);
             color: white;
             border: none;
-            padding: 16px 40px;
-            font-size: 1.2rem;
+            padding: 14px 36px;
+            font-size: clamp(0.9rem, 2.5vw, 1.2rem);
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 8px 20px rgba(255, 78, 80, 0.3);
             font-weight: 600;
             letter-spacing: 1px;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             text-decoration: none;
         }
 
+        .open-book-btn:hover,
         .play:hover {
             transform: translateY(-3px);
             box-shadow: 0 12px 25px rgba(255, 78, 80, 0.4);
         }
 
+        .open-book-btn:active,
         .play:active {
             transform: translateY(1px);
         }
 
+        /* Book Overlay */
         .book-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 100;
-            padding: 20px;
+            padding: 10px;
         }
 
         .book {
-            width: 90%;
+            width: 95%;
             max-width: 900px;
             height: 80vh;
             perspective: 2000px;
@@ -136,6 +118,8 @@
             transition: transform 1s ease-in-out;
             z-index: 10;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            text-align: center;
         }
 
         .book-cover.open {
@@ -143,28 +127,25 @@
         }
 
         .cover-title {
-            font-size: 3.5rem;
+            font-size: clamp(2rem, 5vw, 3.5rem);
             font-weight: 700;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
             background: linear-gradient(to right, #f9d423, #ff4e50);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             letter-spacing: 3px;
         }
 
         .cover-subtitle {
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
             color: #a0a0c0;
-            font-weight: 300;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .open-text {
             font-size: 1rem;
             color: #f9d423;
-            margin-top: 2rem;
             animation: pulse 2s infinite;
         }
 
@@ -198,7 +179,7 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            padding: 40px 30px 80px;
+            padding: 20px 15px 70px;
             overflow-y: auto;
             display: none;
         }
@@ -207,22 +188,24 @@
             display: block;
         }
 
-        /* Header Row (Skip, Title, Close) */
+        /* Header Row */
         .page-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .page-header h2 {
             color: #16213e;
-            font-size: 1.8rem;
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
             border-bottom: 2px solid #ff4e50;
             padding-bottom: 5px;
-            margin: 0;
-            flex: 1;
+            margin: 0 auto;
             text-align: center;
+            flex: 1;
         }
 
         .skip-link {
@@ -230,66 +213,66 @@
             background: linear-gradient(135deg, #4CAF50, #45a049);
             color: white;
             text-decoration: none;
-            padding: 8px 16px;
+            padding: 6px 14px;
             border-radius: 20px;
             font-weight: 500;
             transition: all 0.3s;
             box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
-            margin-right: 10px;
         }
 
         .skip-link:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
         }
 
         .close-book {
             background: #ff4e50;
             color: white;
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             font-size: 1.2rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 10px rgba(255, 78, 80, 0.3);
         }
 
         .page h3 {
             color: #1a1a2e;
-            margin: 20px 0 10px;
+            margin: 15px 0 8px;
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
         }
 
         .page ul {
             margin-left: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .page li {
             margin-bottom: 8px;
             line-height: 1.5;
+            font-size: clamp(0.9rem, 2vw, 1rem);
         }
 
         .page-nav {
             position: absolute;
             bottom: 20px;
-            width: calc(100% - 60px);
+            width: calc(100% - 30px);
             display: flex;
             justify-content: space-between;
-            left: 30px;
+            left: 15px;
         }
 
         .nav-btn {
             background: #16213e;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 8px 18px;
+            border-radius: 6px;
             cursor: pointer;
             transition: background 0.3s;
+            font-size: 0.95rem;
         }
 
         .nav-btn:hover {
@@ -303,33 +286,26 @@
 
         .page-numbers {
             position: absolute;
-            bottom: 20px;
+            bottom: 60px;
             left: 50%;
             transform: translateX(-50%);
             color: #666;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
-        @media (max-width: 768px) {
-            .game-title {
-                font-size: 2.5rem;
-            }
-
+        @media (max-width: 500px) {
             .book {
-                height: 70vh;
-            }
-
-            .page {
-                padding: 20px 15px 70px;
-            }
-
-            .page-header h2 {
-                font-size: 1.4rem;
+                height: 75vh;
             }
 
             .page-nav {
-                width: calc(100% - 30px);
-                left: 15px;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .page-numbers {
+                bottom: 90px;
             }
         }
     </style>
@@ -339,8 +315,7 @@
     <div class="container">
         <h1 class="game-title">DECEPTIONIST</h1>
         <p class="subtitle">"NOT ALL EXITS ARE ESCAPE"</p>
-        <button class="open-book-btn">OPEN RULE BOOK</button>
-        <br>
+        <button class="open-book-btn">OPEN RULE BOOK</button><br>
         <a class="play" href="./deceptionist.html">Play Now</a>
     </div>
 
@@ -353,6 +328,7 @@
             </div>
 
             <div class="book-content">
+                <!-- PAGE 1 -->
                 <div class="page active" id="page1">
                     <div class="page-header">
                         <a href="./deceptionist.html" class="skip-link">Skip</a>
@@ -373,8 +349,8 @@
                         <li><strong>Roll</strong>: Click Roll Dice on your turn.</li>
                         <li><strong>Unlock</strong>: Your first six only unlocks your piece onto the board (no wall that
                             turn).</li>
-                        <li><strong>Move</strong>: After rolling, click a highlighted cell to move exactly that many
-                            steps along connected cells.</li>
+                        <li><strong>Move</strong>: Click a highlighted cell to move exactly that many steps along
+                            connected cells.</li>
                     </ul>
 
                     <div class="page-nav">
@@ -384,6 +360,7 @@
                     <div class="page-numbers">Page 1 of 4</div>
                 </div>
 
+                <!-- PAGE 2 -->
                 <div class="page" id="page2">
                     <div class="page-header">
                         <a href="./deceptionist.html" class="skip-link">Skip</a>
@@ -393,18 +370,18 @@
 
                     <ul>
                         <li><strong>When</strong>: Walls can be placed only on a turn where a six is rolled (except the
-                            first six, which only unlocks).</li>
-                        <li><strong>Choice</strong>: Placing a wall is optional for both you and bots.</li>
+                            first six).</li>
+                        <li><strong>Choice</strong>: Placing a wall is optional.</li>
                         <li><strong>Limits</strong>: Each color has 3 walls. A wall lasts for 3 of that color's turns.
                         </li>
                         <li><strong>Effect</strong>: Only the wall owner can enter its cell; others are blocked.</li>
-                        <li><strong>No-Place Zones</strong>: Walls cannot be placed on any location/goal cell.</li>
+                        <li><strong>No-Place Zones</strong>: Walls cannot be placed on goal cells.</li>
                     </ul>
 
-                    <h2>Special Rule</h2>
+                    <h3>Special Rule</h3>
                     <ul>
-                        <li><strong>Trapped on 4</strong>: If a piece is sandwiched by two walls with a one-cell gap and
-                            the roll is 4, that piece automatically returns home.</li>
+                        <li><strong>Trapped on 4</strong>: If trapped between two walls with a one-cell gap and roll 4,
+                            you return home.</li>
                     </ul>
 
                     <div class="page-nav">
@@ -414,6 +391,7 @@
                     <div class="page-numbers">Page 2 of 4</div>
                 </div>
 
+                <!-- PAGE 3 -->
                 <div class="page" id="page3">
                     <div class="page-header">
                         <a href="./deceptionist.html" class="skip-link">Skip</a>
@@ -422,18 +400,16 @@
                     </div>
 
                     <ul>
-                        <li><strong>Ends When</strong>: The game ends when you finish (shows rank: 1st/2nd/3rd) or all
-                            three bots finish first (You lose).</li>
-                        <li><strong>Ongoing</strong>: If a bot finishes before you, the game continues until you finish
-                            or all three bots finish.</li>
+                        <li><strong>Ends When</strong>: Game ends when you finish or all 3 bots finish first.</li>
+                        <li><strong>Ongoing</strong>: If a bot finishes before you, game continues until you or all bots
+                            finish.</li>
                     </ul>
 
-                    <h2>Controls</h2>
+                    <h3>Controls</h3>
                     <ul>
                         <li><strong>Roll Dice</strong>: Start your turn.</li>
                         <li><strong>Move</strong>: Click a highlighted target cell.</li>
-                        <li><strong>Place Wall</strong>: After rolling a six (not the first six), click Place Wall, then
-                            a cell to place it.</li>
+                        <li><strong>Place Wall</strong>: After rolling a six, click Place Wall, then select a cell.</li>
                     </ul>
 
                     <div class="page-nav">
@@ -443,6 +419,7 @@
                     <div class="page-numbers">Page 3 of 4</div>
                 </div>
 
+                <!-- PAGE 4 -->
                 <div class="page" id="page4">
                     <div class="page-header">
                         <a href="./deceptionist.html" class="skip-link">Skip</a>
@@ -450,12 +427,10 @@
                         <button class="close-book">×</button>
                     </div>
 
-                    <p>Now that you know the rules, you're ready to start playing Deceptionist!</p>
-                    <p>Remember, strategy is key. Use your walls wisely to block opponents while advancing your own
-                        piece.</p>
-                    <p>Good luck and have fun!</p>
+                    <p>Now that you know the rules, you're ready to start playing Deceptionist! Use strategy, plan your
+                        moves, and block wisely.</p>
 
-                    <div style="text-align: center; margin-top: 40px;">
+                    <div style="text-align: center; margin-top: 30px;">
                         <button class="open-book-btn" style="margin: 0;">PLAY GAME</button>
                     </div>
 
@@ -481,11 +456,9 @@
             const nextBtns = document.querySelectorAll('.next-btn');
             const pageNumbers = document.querySelectorAll('.page-numbers');
             const playGameBtn = document.querySelector('#page4 .open-book-btn');
-
             let currentPage = 0;
 
             openBookBtn.addEventListener('click', () => bookContainer.style.display = 'flex');
-
             bookCover.addEventListener('click', () => {
                 bookCover.classList.add('open');
                 setTimeout(() => bookContent.style.display = 'block', 500);
