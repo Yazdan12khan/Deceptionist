@@ -298,14 +298,16 @@
                 height: 75vh;
             }
 
+            /* Keep nav buttons on left & right even in mobile view */
             .page-nav {
-                flex-direction: column;
+                flex-direction: row;
+                justify-content: space-between;
                 align-items: center;
                 gap: 10px;
             }
 
             .page-numbers {
-                bottom: 90px;
+                bottom: 60px;
             }
         }
     </style>
